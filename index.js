@@ -29,8 +29,8 @@ module.exports.handler = (event, context, callback) => {
     if (!mimetype)
         err = "mimetype param is required";
     
-    if (type)
-        err = "type param is required"
+    if (!type)
+        err = "type param is required";
 
     if (err) {
         callback(
@@ -93,7 +93,7 @@ module.exports.handler = (event, context, callback) => {
                     body: JSON.stringify({ 
                         signedUrl: s3.getSignedUrl(
                             "putObject",
-                            {Bucket: bucketName, Key, ContentType: mimetype}
+                            {Bucket: bucketName, Key: key, ContentType: mimetype}
                         ),
                         uploadedUrl: `${publicOrigin}/${bucketName}/${key}`
                     }),
