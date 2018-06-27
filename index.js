@@ -8,6 +8,7 @@ const secretAccessKey = process.env.SECRET_ACCESS_KEY;
 const bucketName      = "is09-portal-image";
 const roleArn         = "arn:aws:iam::278847671089:role/create-upload-to-s3-key-role";
 const roleSessionName = "session_create-upload-to-s3-key-role";
+const publicOrigin    = "https://s3-ap-northeast-1.amazonaws.com"
 
 const sts = new aws.STS({
     "accessKeyId"    : accessKeyId,
@@ -94,7 +95,7 @@ module.exports.handler = (event, context, callback) => {
                             "putObject",
                             {Bucket: bucketName, Key, ContentType: mimetype}
                         ),
-                        uploadedUrl: 
+                        uploadedUrl: `${publicOrigin}/${bucketName}/${key}`
                     }),
                     headers: {
                         "Content-Type": "application/json",
