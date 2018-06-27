@@ -1,6 +1,7 @@
 'use strict';
 
-var aws    = require("aws-sdk");
+const aws    = require("aws-sdk");
+const uuid   = require("uuid")
 
 const accessKeyId     = process.env.ACCESS_KEY_ID;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
@@ -16,14 +17,19 @@ const sts = new aws.STS({
 module.exports.handler = (event, context, callback) => {
     const err = null;
     const {
-        filename,
+        userId,
+        type, // work
         mimetype
     } = event.queryStringParameters;
     
-    if (!filename)
+    if (!userId)
         err = "filename param is required";
+
     if (!mimetype)
         err = "mimetype param is required";
+    
+    if (type)
+        err = "type param is required"
 
     if (err) {
         callback(
@@ -72,6 +78,12 @@ module.exports.handler = (event, context, callback) => {
                 "secretAccessKey": data.Credentials.SecretAccessKey,
                 "sessionToken"   : data.Credentials.SessionToken
             });
+
+            const fileName = uuid.v4();
+            const key = (
+                type === "work" ? `users/${userId}/works/${fileName}`
+              :                   `users/${userId}/tmp/${fileName}`
+            )
             
             callback(
                 null, 
@@ -80,8 +92,9 @@ module.exports.handler = (event, context, callback) => {
                     body: JSON.stringify({ 
                         signedUrl: s3.getSignedUrl(
                             "putObject",
-                            {Bucket: bucketName, Key: filename, ContentType: mimetype}
-                        )
+                            {Bucket: bucketName, Key, ContentType: mimetype}
+                        ),
+                        uploadedUrl: 
                     }),
                     headers: {
                         "Content-Type": "application/json",
