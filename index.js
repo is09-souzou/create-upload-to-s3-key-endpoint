@@ -19,7 +19,7 @@ module.exports.handler = (event, context, callback) => {
     const err = null;
     const {
         userId,
-        type, // work
+        type, // work | profile
         mimetype
     } = event.queryStringParameters;
     
@@ -82,8 +82,9 @@ module.exports.handler = (event, context, callback) => {
 
             const fileName = uuid.v4();
             const key = (
-                type === "work" ? `users/${userId}/works/${fileName}`
-              :                   `users/${userId}/tmp/${fileName}`
+                type === "work"    ? `users/${userId}/works/${fileName}`
+              : type === "profile" ? `users/${userId}/profile/${fileName}`
+              :                      `users/${userId}/tmp/${fileName}`
             )
             
             callback(
