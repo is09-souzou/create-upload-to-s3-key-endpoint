@@ -1,7 +1,8 @@
 'use strict';
 
-const aws    = require("aws-sdk");
-const uuid   = require("uuid")
+const aws  = require("aws-sdk");
+const uuid = require("uuid");
+const jwtDecode = require('jwt-decode');
 
 const accessKeyId     = process.env.ACCESS_KEY_ID;
 const secretAccessKey = process.env.SECRET_ACCESS_KEY;
@@ -16,13 +17,19 @@ const sts = new aws.STS({
 });
 
 module.exports.handler = (event, context, callback) => {
-    const err = null;
+    const decodedJwt = jwtDecode(event.headers.Authorization);
+
     const {
         userId,
         type, // work | profile
         mimetype
     } = event.queryStringParameters;
     
+    const err = null;
+
+    if (decodedJwt !== userId)
+        err = "You can not change other than yourself"
+
     if (!userId)
         err = "filename param is required";
 
