@@ -25,9 +25,9 @@ module.exports.handler = (event, context, callback) => {
         mimetype
     } = event.queryStringParameters;
     
-    const err = null;
+    let err = null;
 
-    if (decodedJwt !== userId)
+    if (decodedJwt.sub !== userId)
         err = "You can not change other than yourself"
 
     if (!userId)
