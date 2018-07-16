@@ -89,7 +89,7 @@ module.exports.handler = (event, context, callback) => {
 
             const fileName = uuid.v4();
             const key = (
-                type === "work"    ? `users/${userId}/works/${fileName}`
+                type === "work"    ? `users/${userId}/${fileName}`
               : type === "profile" ? `users/${userId}/profile/${fileName}`
               :                      `users/${userId}/tmp/${fileName}`
             )
